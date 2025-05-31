@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quicktrack/assets/app_bar_widget.dart';
-import 'package:quicktrack/assets/app_drawer_widget.dart';
-import 'package:quicktrack/assets/my_app_state.dart';
-import 'package:quicktrack/pages/home_page.dart';
+import 'package:quicktrack/assets/assets.dart';
+import 'package:quicktrack/pages/pages.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main() {
   runApp(
@@ -23,11 +22,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var pageIndex = 0;
-  final List<Widget> pages = [
-    HomePage(),
-    Center(child: Text('Settings Page')),
-    Center(child: Text('About Page')),
-  ];
+  final List<Widget> pages = [HomePage(), SettingsPage(), AboutPage()];
 
   void onPageChanged(int index) {
     setState(() {
@@ -37,6 +32,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    windowManager.ensureInitialized();
+    windowManager.waitUntilReadyToShow().then((_) async {
+      await windowManager.setTitle("QuickTrack");
+      await windowManager.setSize(const Size(800, 600));
+      await windowManager.center();
+      await windowManager.show();
+      await windowManager.focus();
+    });
+
     var theme = ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       useMaterial3: true,

@@ -35,6 +35,7 @@ class _MyAppState extends State<MyApp> {
     windowManager.ensureInitialized();
     windowManager.waitUntilReadyToShow().then((_) async {
       await windowManager.setTitle("QuickTrack");
+      await windowManager.setMinimumSize(const Size(800, 600));
       await windowManager.setSize(const Size(800, 600));
       await windowManager.center();
       await windowManager.show();

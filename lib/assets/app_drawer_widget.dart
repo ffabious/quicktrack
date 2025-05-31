@@ -23,7 +23,9 @@ class AppDrawerWidget extends StatelessWidget {
             title: Text('Home'),
             onTap: () {
               onPageChanged(0);
-              Navigator.pop(context);
+              if (Scaffold.of(context).isDrawerOpen) {
+                Navigator.of(context).pop();
+              }
             },
           ),
           ListTile(
@@ -31,7 +33,9 @@ class AppDrawerWidget extends StatelessWidget {
             title: Text('Settings'),
             onTap: () {
               onPageChanged(1);
-              Navigator.pop(context);
+              if (Scaffold.of(context).isDrawerOpen) {
+                Navigator.of(context).pop();
+              }
             },
           ),
           ListTile(
@@ -39,7 +43,9 @@ class AppDrawerWidget extends StatelessWidget {
             title: Text('About'),
             onTap: () {
               onPageChanged(2);
-              Navigator.pop(context);
+              if (Scaffold.of(context).isDrawerOpen) {
+                Navigator.of(context).pop();
+              }
             },
           ),
         ],

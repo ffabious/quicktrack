@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quicktrack/assets/add_button_widget.dart';
 import 'package:quicktrack/assets/assets.dart';
 import 'package:quicktrack/pages/pages.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:hive/hive.dart';
 
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: const MyApp(),
+      create: (context) => GeneralState(),
+      child: MaterialApp(
+        title: 'QuickTrack',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MyApp(),
+      ),
     ),
   );
 }
@@ -31,8 +41,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     windowManager.ensureInitialized();
+    windowManager.setTitleBarStyle(TitleBarStyle.normal);
     windowManager.waitUntilReadyToShow().then((_) async {
       await windowManager.setTitle("QuickTrack");
       await windowManager.setMinimumSize(const Size(800, 600));
@@ -41,20 +53,32 @@ class _MyAppState extends State<MyApp> {
       await windowManager.show();
       await windowManager.focus();
     });
+    Hive.init('quicktrack_hive');
+    Hive.openBox('settings');
+  }
 
+  @override
+  Widget build(BuildContext context) {
     var theme = ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       useMaterial3: true,
     );
-    return MaterialApp(
-      title: 'QuickTrack',
-      debugShowCheckedModeBanner: false,
-      theme: theme,
-      home: Scaffold(
-        appBar: AppBarWidget(theme: theme),
-        body: pages[pageIndex],
-        drawer: AppDrawerWidget(onPageChanged: onPageChanged),
-      ),
+    return Scaffold(
+      appBar: AppBarWidget(theme: theme),
+      body: pages[pageIndex],
+      drawer: AppDrawerWidget(onPageChanged: onPageChanged),
+      floatingActionButton: pageIndex == 0
+          ? AddButtonWidget(content: AddExpenseForm())
+          : null,
     );
+  }
+}
+
+class AddExpenseForm extends StatelessWidget {
+  const AddExpenseForm({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text('Add Expense Form');
   }
 }
